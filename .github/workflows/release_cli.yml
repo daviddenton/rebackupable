@@ -66,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
-          path: rebackupable
+          path: build/native/nativeCompile/rebackupable
       - name: Release Native Image Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
