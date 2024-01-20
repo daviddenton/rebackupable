@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "main" ]
 
+concurrency:
+  group: build
+  cancel-in-progress: true
+
 jobs:
   build-jar:
     name: Build JAR
