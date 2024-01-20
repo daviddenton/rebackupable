@@ -36,7 +36,7 @@ apply(plugin = "java")
 apply(plugin = "kotlin")
 
 application {
-    mainClass.set("daviddenton.MonopolisCLI")
+    mainClass.set("rebackupable.RebackupableCLI")
 }
 
 repositories {
