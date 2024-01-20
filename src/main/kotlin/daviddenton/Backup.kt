@@ -13,11 +13,11 @@ fun Backup(
     help = "Generate backup of all files from your Remarkable."
 ) {
     override fun run() {
+        terminal("Backing up Remarkable\n")
         when (val result = hub.backup()) {
             is Success -> terminal("Successfully backed up ${result.value.count} files to ${result.value.dir.absolutePath}")
-            is Failure -> TODO()
+            is Failure -> terminal(result.reason.stackTraceToString())
         }
-        println("BACKING UP")
     }
 }
 

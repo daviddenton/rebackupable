@@ -1,5 +1,5 @@
 package daviddenton.port
 
-interface Terminal {
+fun interface Terminal {
     operator fun invoke(string: String)
 }

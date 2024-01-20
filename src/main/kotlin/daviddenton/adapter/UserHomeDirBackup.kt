@@ -9,7 +9,7 @@ import java.io.InputStream
 
 fun UserHomeDirBackup(homeDir: File) = object : Backup {
     override fun write(path: LocalFilePath, data: InputStream) = resultFrom {
-        val target = File(homeDir, path.value).apply { require(parentFile.mkdirs()) }
+        val target = File(homeDir, path.value).apply { if (!parentFile.exists()) require(parentFile.mkdirs()) }
         data.copyTo(target.outputStream())
     }.map { }
 }

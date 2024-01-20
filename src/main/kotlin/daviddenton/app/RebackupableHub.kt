@@ -8,6 +8,7 @@ import daviddenton.domain.RemarkableFileType.CollectionType
 import daviddenton.domain.RemarkableFileType.DocumentType
 import daviddenton.port.Backup
 import daviddenton.port.Remarkable
+import daviddenton.port.Terminal
 import dev.forkhandles.result4k.Result
 import dev.forkhandles.result4k.allValues
 import dev.forkhandles.result4k.flatMap
@@ -19,7 +20,8 @@ import java.time.format.DateTimeFormatter
 class RebackupableHub(
     private val clock: Clock,
     private val backup: Backup,
-    private val remarkable: Remarkable
+    private val remarkable: Remarkable,
+    private val terminal: Terminal
 ) {
     fun backup() = ROOT.backup()
 
@@ -35,12 +37,18 @@ class RebackupableHub(
                 it.map { remarkableFile ->
                     when (remarkableFile.Type) {
                         CollectionType -> child(remarkableFile.ID).backupFolder(fsPath.child(remarkableFile))
-                        DocumentType -> remarkable.download(remarkableFile.ID)
-                            .flatMap { backup.write(fsPath.child(remarkableFile), it) }
-                            .map { 1 }
+                        DocumentType -> {
+                            terminal(".")
+                            remarkable.download(remarkableFile.ID)
+                                .flatMap { backup.write(fsPath.child(remarkableFile), it) }
+                                .map { 1 }
+                        }
                     }
                 }
                     .allValues()
                     .map(List<Int>::sum)
+                    .also {
+                        terminal("\n")
+                    }
             }
 }

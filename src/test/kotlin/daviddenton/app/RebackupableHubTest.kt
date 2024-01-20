@@ -21,7 +21,8 @@ class RebackupableHubTest {
     private val hub = RebackupableHub(
         Clock.fixed(EPOCH, ZoneId.of("UTC")),
         backup,
-        HttpRemarkable(FakeRemarkable(contents), Uri.of("http://remarkable"))
+        HttpRemarkable(FakeRemarkable(contents), Uri.of("http://remarkable")),
+        ::println
     )
 
     @Test
