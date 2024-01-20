@@ -1,7 +1,7 @@
 package daviddenton.app
 
 import daviddenton.domain.BackupReport
-import daviddenton.domain.LocalFilePath
+import daviddenton.domain.FolderPath
 import daviddenton.domain.RemarkableContentPath
 import daviddenton.domain.RemarkableContentPath.Companion.ROOT
 import daviddenton.domain.RemarkableFileType.CollectionType
@@ -13,7 +13,6 @@ import dev.forkhandles.result4k.Result
 import dev.forkhandles.result4k.allValues
 import dev.forkhandles.result4k.flatMap
 import dev.forkhandles.result4k.map
-import java.io.File
 import java.time.Clock
 import java.time.format.DateTimeFormatter
 
@@ -23,15 +22,14 @@ class RebackupableHub(
     private val remarkable: Remarkable,
     private val terminal: Terminal
 ) {
-    fun backup() = ROOT.backup()
-
-    private fun RemarkableContentPath.backup(): Result<BackupReport, Exception> {
+    fun backup(): Result<BackupReport, Exception> {
         val backupTime = clock.instant().atZone(clock.zone)
         val rootFolder = DateTimeFormatter.ofPattern("yyyy/MM/DD/HHmm").format(backupTime)
-        return backupFolder(LocalFilePath.of(rootFolder)).map { BackupReport(File(rootFolder), it) }
+
+        return ROOT.backupFolder(FolderPath.of(rootFolder)).map { BackupReport(backup.location(rootFolder), it) }
     }
 
-    private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> =
+    private fun RemarkableContentPath.backupFolder(fsPath: FolderPath): Result<Int, Exception> =
         remarkable.list(this)
             .flatMap {
                 it.map { remarkableFile ->

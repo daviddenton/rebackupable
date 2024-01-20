@@ -10,7 +10,6 @@ import org.http4k.core.Uri
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
-import java.io.File
 import java.time.Clock
 import java.time.Instant.EPOCH
 import java.time.ZoneId
@@ -27,7 +26,7 @@ class RebackupableHubTest {
 
     @Test
     fun `backs up all content`() {
-        expectThat(hub.backup()).isEqualTo(Success(BackupReport(File("1970/01/01/0000"), 3)))
+        expectThat(hub.backup()).isEqualTo(Success(BackupReport("memory/1970/01/01/0000", 3)))
         expectThat(backup.allSaved().toList().joinToString("\n")).isEqualTo(
             listOf(
                 "1970/01/01/0000/rootFile" to "00000000-0000-0000-0000-000000000001",

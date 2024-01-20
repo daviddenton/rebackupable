@@ -15,7 +15,7 @@ fun Backup(
     override fun run() {
         terminal("Backing up Remarkable\n")
         when (val result = hub.backup()) {
-            is Success -> terminal("Successfully backed up ${result.value.count} files to ${result.value.dir.absolutePath}")
+            is Success -> terminal("Successfully backed up ${result.value.count} files to ${result.value.location}")
             is Failure -> terminal(result.reason.stackTraceToString())
         }
     }

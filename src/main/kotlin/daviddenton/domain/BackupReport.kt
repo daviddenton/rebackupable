@@ -1,5 +1,3 @@
 package daviddenton.domain
 
-import java.io.File
-
-data class BackupReport(val dir: File, val count: Int)
+data class BackupReport(val location: String, val count: Int)

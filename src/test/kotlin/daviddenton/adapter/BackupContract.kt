@@ -1,6 +1,6 @@
 package daviddenton.adapter
 
-import daviddenton.domain.LocalFilePath
+import daviddenton.domain.FolderPath
 import daviddenton.port.Backup
 import dev.forkhandles.result4k.orThrow
 import org.junit.jupiter.api.Test
@@ -15,8 +15,8 @@ interface BackupContract {
 
     @Test
     fun `backs up content`() {
-        backup.write(LocalFilePath.of("foo/moo"), "hello1".byteInputStream()).orThrow()
-        backup.write(LocalFilePath.of("foo/alt/bar"), "hello2".byteInputStream()).orThrow()
+        backup.write(FolderPath.of("foo/moo"), "hello1".byteInputStream()).orThrow()
+        backup.write(FolderPath.of("foo/alt/bar"), "hello2".byteInputStream()).orThrow()
 
         expectThat(getFile("foo/moo")).isEqualTo("hello1")
         expectThat(getFile("foo/alt/bar")).isEqualTo("hello2")
