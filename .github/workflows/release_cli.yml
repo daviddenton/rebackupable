@@ -5,8 +5,44 @@ on:
     types: [ release ]
 
 jobs:
-  apple-silicon:
+  setup:
     runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
+        with:
+          tag: ${{ github.event.client_payload.VERSION }}
+          name: Release ${{ github.event.client_payload.VERSION }}
+          body: |
+            Release ${{ github.event.client_payload.VERSION }}
+      - name: Write Upload URL To File
+        run: |
+          echo "${{steps.create_release.outputs.upload_url}}" > upload_url.txt
+      - name: Publish Upload URL
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: upload_url.txt
+          path: upload_url.txt
+
+  release:
+    needs: setup
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+#          - macos-latest
+#          - macos-latest-xlarge
+        include:
+          - os: ubuntu-latest
+            label: linux
+          - os: macos-latest
+            label: mac
+          - os: macos-latest-xlarge
+            label: mac-m1
+    runs-on: ${{matrix.os}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -18,168 +54,26 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: ./gradlew nativeCompile
-#  build-jar:
-#    name: Build JAR
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4.1.1
-#      - name: Setup Java
-#        uses: actions/setup-java@v3.10.0
-#        with:
-#          distribution: temurin
-#          java-version: 21
-#          cache: gradle
-#      - name: Build JAR
-#        run: |
-#          ./gradlew :shadowJar
-#      - name: Publish JAR
-#        uses: actions/upload-artifact@v3.1.3
-#        with:
-#          name: rebackupable.jar
-#          path: build/libs/rebackupable.jar
-#      - name: Create Release
-#        id: create_release
-#        uses: ncipollo/release-action@v1
-#        env:
-#          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
-#        with:
-#          tag: ${{ github.event.client_payload.VERSION }}
-#          name: Release ${{ github.event.client_payload.VERSION }}
-#          body: |
-#            Release ${{ github.event.client_payload.VERSION }}
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-#        with:
-#          upload_url: ${{steps.create_release.outputs.upload_url}}
-#          asset_path: build/libs/rebackupable.jar
-#          asset_name: rebackupable.jar
-#          asset_content_type: application/java-archive
-#      - name: Write Upload URL To File
-#        run: |
-#          echo "${{steps.create_release.outputs.upload_url}}" > upload_url.txt
-#      - name: Publish Upload URL
-#        uses: actions/upload-artifact@v3.1.3
-#        with:
-#          name: upload_url.txt
-#          path: upload_url.txt
-#  build-os-image:
-#    name: Build OS Image
-#    needs:
-#      - build-jar
-#    strategy:
-#      matrix:
-#        os:
-#          - ubuntu-latest
-#          - macos-latest
-#        include:
-#          - os: ubuntu-latest
-#            label: linux
-#          - os: macos-latest
-#            label: mac
-#    runs-on: ${{matrix.os}}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4.1.1
-#      - name: Setup Java
-#        uses: actions/setup-java@v3.10.0
-#        with:
-#          distribution: temurin
-#          java-version: 21
-#          cache: gradle
-#      - uses: graalvm/setup-graalvm@v1
-#        with:
-#          java-version: '21'
-#          distribution: 'graalvm'
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Get Version Number
-#        run: |
-#          echo "VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
-#      - name: Get JAR Artifact
-#        uses: actions/download-artifact@v3.0.2
-#        with:
-#          name: rebackupable.jar
-#      - name: Get Release URL
-#        uses: actions/download-artifact@v3.0.2
-#        with:
-#          name: upload_url.txt
-#      - name: Get Upload URL
-#        run: |
-#          echo "UPLOAD_URL=$(cat upload_url.txt)" >> $GITHUB_ENV
-#      - name: Build Native Image
-#        run: |
-#          native-image --no-server --no-fallback --allow-incomplete-classpath -jar rebackupable.jar
-#      - name: Publish Native Image
-#        if: success()
-#        uses: actions/upload-artifact@v3.1.3
-#        with:
-#          name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
-#          path: rebackupable
-#      - name: Release Native Image Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
-#        with:
-#          upload_url: ${{env.UPLOAD_URL}}
-#          asset_name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
-#          asset_path: rebackupable
-#          asset_content_type: application/octet-stream
-#  build-windows-image:
-#    needs:
-#      - build-jar
-#    name: Build Windows Image
-#    runs-on: windows-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4.1.1
-#      - uses: graalvm/setup-graalvm@v1
-#        with:
-#          java-version: '21'
-#          distribution: 'graalvm'
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools
-#        run: |
-#          choco install visualstudio2017-workload-vctools
-#      - name: Get Version Number
-#        run: |
-#          echo "VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_ENV
-#        shell: bash
-#      - name: Get JAR Artifact
-#        uses: actions/download-artifact@v3.0.2
-#        with:
-#          name: rebackupable.jar
-#      - name: Build Native Image
-#        shell: cmd
-#        env:
-#          JAVA_HOME: ./graalvm-ce-java11-22.0.0.2
-#        run: |
-#          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-#          ./graalvm-ce-java11-22.0.0.2/bin/native-image --no-server --no-fallback -H:Name=rebackupable --allow-incomplete-classpath -jar rebackupable.jar
-#      - name: Get Release URL
-#        uses: actions/download-artifact@v3.0.2
-#        with:
-#          name: upload_url.txt
-#      - name: Get Upload URL
-#        run: |
-#          echo "UPLOAD_URL=$(cat upload_url.txt)" >> $GITHUB_ENV
-#        shell: bash
-#      - name: Publish Windows Image
-#        if: success()
-#        uses: actions/upload-artifact@v3.1.3
-#        with:
-#          name: rebackupable-${{ github.event.client_payload.VERSION }}-windows.exe
-#          path: rebackupable.exe
-#      - name: Release Windows Image Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
-#        with:
-#          upload_url: ${{env.UPLOAD_URL}}
-#          asset_name: rebackupable-windows.exe
-#          asset_path: rebackupable.exe
-#          asset_content_type: application/octet-stream
+      - name: Get Release URL
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: upload_url.txt
+      - name: Get Upload URL
+        run: |
+          echo "UPLOAD_URL=$(cat upload_url.txt)" >> $GITHUB_ENV
+      - name: Publish Native Image
+        if: success()
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
+          path: rebackupable
+      - name: Release Native Image Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
+        with:
+          upload_url: ${{env.UPLOAD_URL}}
+          asset_name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
+          asset_path: rebackupable
+          asset_content_type: application/octet-stream
