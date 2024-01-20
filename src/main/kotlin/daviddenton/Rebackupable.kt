@@ -27,7 +27,7 @@ fun Rebackupable(
     val terminal = SystemTerminal()
     val debug = AtomicReference(false)
     val clock = Clock.systemDefaultZone()
-    val backup = UserHomeDirBackup(clock, HOME_DIR(env))
+    val backup = UserHomeDirBackup(HOME_DIR(env))
     val remarkable = HttpRemarkable(Debug(debug).then(rawHttp), SERVER_URL(env))
     val hub = RebackupableHub(clock, backup, remarkable)
 
