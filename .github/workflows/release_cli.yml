@@ -5,18 +5,19 @@ on:
     types: [ release ]
 
 jobs:
-   apple-silicon:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout
-         uses: actions/checkout@v4.1.1
-       - name: Setup Java
-         uses: actions/setup-java@v3.10.0
-         with:
-           distribution: oracle
-           java-version: 21
-       - name: Build
-         run: ./gradlew nativeCompile
+  apple-silicon:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "21"
+          distribution: "graalvm"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: ./gradlew nativeCompile
 #  build-jar:
 #    name: Build JAR
 #    runs-on: ubuntu-latest
