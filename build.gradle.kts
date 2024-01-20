@@ -36,7 +36,7 @@ apply(plugin = "java")
 apply(plugin = "kotlin")
 
 application {
-    mainClass.set("monopolis.MonopolisCLI")
+    mainClass.set("daviddenton.MonopolisCLI")
 }
 
 repositories {
