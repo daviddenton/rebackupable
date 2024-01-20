@@ -14,10 +14,11 @@ sealed interface RemarkableFsEntry {
 
     data class File(
         override val id: RemarkableFileId,
-        override val name: String
+        override val name: String,
+        val type: String
     ) : RemarkableFsEntry {
         override fun toRemarkableFile() =
-            RemarkableFile(id, DocumentType, RemarkableFileName.of(name))
+            RemarkableFile(id, DocumentType, RemarkableFileName.of(name), type)
     }
 
     data class Folder(
@@ -26,6 +27,6 @@ sealed interface RemarkableFsEntry {
         val contents: List<RemarkableFsEntry>
     ) : RemarkableFsEntry {
         override fun toRemarkableFile() =
-            RemarkableFile(id, CollectionType, RemarkableFileName.of(name))
+            RemarkableFile(id, CollectionType, RemarkableFileName.of(name), null)
     }
 }

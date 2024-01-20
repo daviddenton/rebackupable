@@ -29,9 +29,9 @@ class RebackupableHubTest {
         expectThat(hub.backup()).isEqualTo(Success(BackupReport("memory/1970/01/01/0000", 3)))
         expectThat(backup.allSaved().toList().joinToString("\n")).isEqualTo(
             listOf(
-                "1970/01/01/0000/rootFile" to "00000000-0000-0000-0000-000000000001",
-                "1970/01/01/0000/childFolder/childFile" to "00000000-0000-0004-0000-000000000005",
-                "1970/01/01/0000/childFolder/grandchildFolder/grandchildFile" to "00000000-0000-0008-0000-000000000009",
+                "1970/01/01/0000/rootFile.pdf" to "00000000-0000-0000-0000-000000000001",
+                "1970/01/01/0000/childFolder/childFile.pdf" to "00000000-0000-0004-0000-000000000005",
+                "1970/01/01/0000/childFolder/grandchildFolder/grandchildFile.pdf" to "00000000-0000-0008-0000-000000000009",
             ).joinToString("\n")
         )
     }

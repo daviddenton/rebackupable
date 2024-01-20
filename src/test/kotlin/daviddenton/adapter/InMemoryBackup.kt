@@ -1,6 +1,6 @@
 package daviddenton.adapter
 
-import daviddenton.domain.FolderPath
+import daviddenton.domain.LocalFilePath
 import daviddenton.port.Backup
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
@@ -13,7 +13,7 @@ class InMemoryBackup : Backup {
 
     override fun location(backupId: String) = "memory/$backupId"
 
-    override fun write(path: FolderPath, data: InputStream): Result4k<Unit, Exception> {
+    override fun write(path: LocalFilePath, data: InputStream): Result4k<Unit, Exception> {
         content[path.value] = data.reader().readText()
         return Success(Unit)
     }
