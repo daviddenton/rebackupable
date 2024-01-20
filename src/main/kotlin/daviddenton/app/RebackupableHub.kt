@@ -19,8 +19,7 @@ class RebackupableHub(
 ) {
     fun backup() = ROOT.backup()
 
-    private fun RemarkableContentPath.backup(): Result<BackupReport, Exception> = backupFolder()
-        .map { BackupReport(File("."), it) }
+    private fun RemarkableContentPath.backup() = backupFolder().map { BackupReport(File("."), it) }
 
     private fun RemarkableContentPath.backupFolder(): Result<Int, Exception> = remarkable.list(this)
         .flatMap {
@@ -33,6 +32,6 @@ class RebackupableHub(
                 }
             }
                 .allValues()
-                .map { it.sum() }
+                .map(List<Int>::sum)
         }
 }
