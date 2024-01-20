@@ -75,5 +75,5 @@ jobs:
         with:
           upload_url: ${{env.UPLOAD_URL}}
           asset_name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
-          asset_path: rebackupable
+          asset_path: build/native/nativeCompile/rebackupable
           asset_content_type: application/octet-stream
