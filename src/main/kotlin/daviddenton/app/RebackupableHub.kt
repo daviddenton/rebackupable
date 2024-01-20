@@ -19,20 +19,20 @@ class RebackupableHub(
 ) {
     fun backup() = ROOT.backup()
 
-    private fun RemarkableContentPath.backup(): Result<BackupReport, Exception> = remarkable.list(this)
+    private fun RemarkableContentPath.backup(): Result<BackupReport, Exception> = backupFolder()
+        .map { BackupReport(File("."), it) }
+
+    private fun RemarkableContentPath.backupFolder(): Result<Int, Exception> = remarkable.list(this)
         .flatMap {
-            it
-                .map { remarkableFile ->
-                    when (remarkableFile.Type) {
-                        CollectionType -> child(remarkableFile.ID).backup()
-                        DocumentType -> remarkable.download(remarkableFile.ID)
-                            .flatMap {
-                                backup
-                                    .write(RemarkableContentPath.of(remarkableFile.VissibleName.value), it)
-                            }
-                    }
+            it.map { remarkableFile ->
+                when (remarkableFile.Type) {
+                    CollectionType -> child(remarkableFile.ID).backupFolder()
+                    DocumentType -> remarkable.download(remarkableFile.ID)
+                        .flatMap { backup.write(this, remarkableFile.VissibleName, it) }
+                        .map { 1 }
                 }
+            }
                 .allValues()
-                .map { BackupReport(File("."), it.size) }
+                .map { it.sum() }
         }
 }
