@@ -5,7 +5,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     idea
-    `java-library`
     id("com.google.devtools.ksp")
     id("org.graalvm.buildtools.native") version "0.9.28"
 }
@@ -80,11 +79,11 @@ dependencies {
     testImplementation("com.natpryce:hamkrest:_")
 }
 
-//configurations.forEach {
-//    if (it.name.contains("test") || it.name.contains("runtime") || it.name.contains("compileClasspath")) {
-//        it.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
-//    }
-//}
+configurations.forEach {
+    if (it.name.contains("test") || it.name.contains("runtime") || it.name.contains("compileClasspath")) {
+        it.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
+    }
+}
 
 dependencies {
     api(platform(Http4k.bom))
