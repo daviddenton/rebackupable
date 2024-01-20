@@ -82,7 +82,7 @@ tasks {
 
     register<JavaExec>("runCli") {
         classpath = sourceSets["main"].runtimeClasspath
-        mainClass.set("monopolis.MonopolisCLI")
+        mainClass.set("rebackupable.RebackupableCLI")
 
         if (project.hasProperty("cliWorkingDir")) {
             workingDir = File(project.property("cliWorkingDir").toString())

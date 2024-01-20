@@ -1,0 +1,22 @@
+name: "[CLI] Build"
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-jar:
+    name: Build JAR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Setup Java
+        uses: actions/setup-java@v3.10.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - name: Build JAR
+        run: |
+          ./gradlew :check
