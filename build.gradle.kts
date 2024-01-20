@@ -74,6 +74,7 @@ tasks {
             File("src/main/app/application.icns").copyTo(File("$dist/Contents/Resources/application.icns"))
             File("build/native/nativeCompile/rebackupable").copyTo(File("$dist/Contents/MacOS/rebackupable"))
             Runtime.getRuntime().exec(arrayOf("chmod", "+x", "$dist/Contents/MacOS/launcher"))
+            Runtime.getRuntime().exec(arrayOf("chmod", "+x", "$dist/Contents/MacOS/rebackupable"))
         }
     }
 }
