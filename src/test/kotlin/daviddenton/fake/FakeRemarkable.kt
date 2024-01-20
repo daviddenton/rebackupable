@@ -13,41 +13,46 @@ import org.http4k.core.Status.Companion.OK
 import org.http4k.core.with
 import org.http4k.lens.Path
 import org.http4k.lens.value
+import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
 
-fun FakeRemarkable(contents: List<RemarkableFsEntry>) = routes(
-    "/download/{uuid}/placeholder" bind GET to { req: Request ->
-        when (val result = contents.allFiles()
-            .firstOrNull { it.ID.toString() == req.path("uuid") }) {
-            null -> Response(NOT_FOUND)
-            else -> Response(OK).body(result.ID.toString())
-        }
-    },
-    "/documents/{path:.*}" bind GET to { req ->
-        when(val result = contents.find(Path.value(RemarkableContentPath).of("path")(req))) {
-           null -> Response(NOT_FOUND)
-           else -> result.list()
-        }
-    },
-    "/documents" bind GET to { contents.list() }
-)
+fun FakeRemarkable(rootContents: List<RemarkableFsEntry>): RoutingHttpHandler {
+
+
+
+
+    return routes(
+        "/download/{uuid}/placeholder" bind GET to { req: Request ->
+            when (val result = rootContents.allFiles()
+                .firstOrNull { it.ID.toString() == req.path("uuid") }) {
+                null -> Response(NOT_FOUND)
+                else -> Response(OK).body(result.ID.toString())
+            }
+        },
+        "/documents/{path:.*}" bind GET to { req ->
+            when (val result = rootContents.find(Path.value(RemarkableContentPath).of("path")(req))) {
+                null -> Response(NOT_FOUND)
+                else -> result.list()
+            }
+        },
+        "/documents" bind GET to { rootContents.list() }
+    )
+}
 
 private fun List<RemarkableFsEntry>.list() = Response(OK).with(
     Json.autoBody<List<RemarkableFile>>().toLens() of map(RemarkableFsEntry::toRemarkableFile)
 )
 
-fun List<RemarkableFsEntry>.find(path: RemarkableContentPath): List<RemarkableFsEntry>? {
-//    firstOrNull { it.id == path.root }
-//        ?.let {
-//            when(it) {
-//
-//            }
-//            if()
-//        }
+// path = 123/546
+// list = 1 123 (456, 345)
 
-    TODO("Not yet implemented")
+fun List<RemarkableFsEntry>.find(path: RemarkableContentPath): List<RemarkableFsEntry>? {
+    filterIsInstance<Folder>()
+        .firstOrNull { it.toRemarkableFile().ID == path.root }
+        ?.contents
+    TODO()
 }
 
 private fun List<RemarkableFsEntry>.allFiles(): List<RemarkableFile> = flatMap {

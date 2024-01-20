@@ -5,8 +5,13 @@ import dev.forkhandles.values.StringValueFactory
 
 class RemarkableContentPath private constructor(value: String) : StringValue(value) {
     val root get() = RemarkableFileId.parse(value.substringBefore('/'))
-    val isFile get() = value.count { it == '/' }
-    fun child(next: RemarkableFileId) = RemarkableContentPath.of("$value/$next")
+
+    fun dropRoot() = RemarkableContentPath.parse(value.substringAfter('/'))
+
+    fun child(next: RemarkableFileId) = when (ROOT) {
+        this -> RemarkableContentPath.of(next.value.toString())
+        else -> RemarkableContentPath.of("$value/$next")
+    }
 
     companion object : StringValueFactory<RemarkableContentPath>(::RemarkableContentPath) {
         val ROOT = RemarkableContentPath.of("")

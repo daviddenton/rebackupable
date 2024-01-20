@@ -2,7 +2,7 @@ package daviddenton.fake
 
 import daviddenton.adapter.HttpRemarkable
 import daviddenton.contents
-import daviddenton.domain.RemarkableContentPath
+import daviddenton.domain.RemarkableContentPath.Companion.ROOT
 import daviddenton.domain.RemarkableFile
 import daviddenton.domain.RemarkableFileId
 import daviddenton.domain.RemarkableFileName
@@ -19,7 +19,7 @@ class FakeRemarkableTest {
 
     @Test
     fun `get root files`() {
-        expectThat(remarkable.list(RemarkableContentPath.ROOT))
+        expectThat(remarkable.list(ROOT))
             .isEqualTo(
                 Success(
                     listOf(
@@ -39,21 +39,22 @@ class FakeRemarkableTest {
     }
 
     @Test
-    fun `get child files`() {
-        expectThat(remarkable.list(RemarkableContentPath.of("childFolder")))
+    fun `get grandchild files`() {
+        expectThat(remarkable.list(ROOT.child(RemarkableFileId.of(2, 3)).child(RemarkableFileId.of(999, 999))))
             .isEqualTo(
                 Success(
                     listOf(
-                        RemarkableFile(
-                            RemarkableFileId.of(0, 1),
-                            RemarkableFileType.DocumentType,
-                            RemarkableFileName.of("rootFile")
-                        ),
-                        RemarkableFile(
-                            RemarkableFileId.of(2, 3),
-                            RemarkableFileType.CollectionType,
-                            RemarkableFileName.of("childFolder")
-                        )
+                    )
+                )
+            )
+    }
+
+    @Test
+    fun `get child files`() {
+        expectThat(remarkable.list(ROOT.child(RemarkableFileId.of(2, 3))))
+            .isEqualTo(
+                Success(
+                    listOf(
                     )
                 )
             )
