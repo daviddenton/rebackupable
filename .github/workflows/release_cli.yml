@@ -32,16 +32,16 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
+#          - ubuntu-latest
           - macos-latest
-          - macos-latest-xlarge
+#          - macos-latest-xlarge
         include:
-          - os: ubuntu-latest
-            label: linux
+#          - os: ubuntu-latest
+#            label: linux
           - os: macos-latest
             label: macos-x86_64
-          - os: macos-latest-xlarge
-            label: macos-arm64
+#          - os: macos-latest-xlarge
+#            label: macos-arm64
     runs-on: ${{matrix.os}}
     steps:
       - name: Checkout
@@ -53,7 +53,7 @@ jobs:
           distribution: "graalvm"
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
-        run: ./gradlew nativeCompile
+        run: ./gradlew nativeCompile osxApp
       - name: Get Release URL
         uses: actions/download-artifact@v3.0.2
         with:
@@ -61,19 +61,16 @@ jobs:
       - name: Get Upload URL
         run: |
           echo "UPLOAD_URL=$(cat upload_url.txt)" >> $GITHUB_ENV
-      - name: Publish Native Image
-        if: success()
-        uses: actions/upload-artifact@v3.1.3
-        with:
-          name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
-          path: build/native/nativeCompile/rebackupable
-      - name: Release Native Image Asset
+      - name: Upload it
+        run: |
+          hdiutil create -volname "Rebackupable" -srcfolder build/app/Rebackupable.app -ov -format UDZO Rebackupable-${{matrix.label}}.dmg
+      - name: Upload app
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
         with:
           upload_url: ${{env.UPLOAD_URL}}
-          asset_name: rebackupable-${{ github.event.client_payload.VERSION }}-${{matrix.label}}
-          asset_path: build/native/nativeCompile/rebackupable
+          asset_name: Rebackupable-${{matrix.label}}.dmg
+          asset_path: Rebackupable-${{matrix.label}}.dmg
           asset_content_type: application/octet-stream

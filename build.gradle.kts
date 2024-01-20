@@ -25,11 +25,9 @@ repositories {
     google()
 }
 
-apply(plugin = "kotlin")
-apply(plugin = "com.google.devtools.ksp")
-
 apply(plugin = "java")
 apply(plugin = "kotlin")
+apply(plugin = "com.google.devtools.ksp")
 
 graalvmNative {
     toolchainDetection.set(true)
