@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.JavaVersion.VERSION_1_8
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -7,8 +6,8 @@ plugins {
     kotlin("jvm")
     idea
     `java-library`
-    application
     id("com.google.devtools.ksp")
+    id("org.graalvm.buildtools.native") version "0.9.28"
 }
 
 buildscript {
@@ -19,7 +18,6 @@ buildscript {
 
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
-        classpath("gradle.plugin.com.github.johnrengelman:shadow:_")
     }
 }
 
@@ -30,13 +28,19 @@ repositories {
 
 apply(plugin = "kotlin")
 apply(plugin = "com.google.devtools.ksp")
-apply(plugin = "com.github.johnrengelman.shadow")
 
 apply(plugin = "java")
 apply(plugin = "kotlin")
 
-application {
-    mainClass.set("rebackupable.RebackupableCLI")
+graalvmNative {
+    toolchainDetection.set(true)
+    binaries {
+        named("main") {
+            imageName.set("rebackupable")
+            mainClass.set("rebackupable.RebackupableCLI")
+            useFatJar.set(true)
+        }
+    }
 }
 
 repositories {
@@ -68,30 +72,6 @@ tasks {
     withType<Test> {
         useJUnitPlatform()
     }
-
-    withType<GenerateModuleMetadata> {
-        enabled = false
-    }
-
-    withType<ShadowJar> {
-        archiveBaseName.set("rebackupable")
-        archiveClassifier.set("")
-        archiveVersion.set("")
-        mergeServiceFiles()
-    }
-
-    register<JavaExec>("runCli") {
-        classpath = sourceSets["main"].runtimeClasspath
-        mainClass.set("rebackupable.RebackupableCLI")
-
-        if (project.hasProperty("cliWorkingDir")) {
-            workingDir = File(project.property("cliWorkingDir").toString())
-        }
-
-        if (project.hasProperty("args")) {
-            setArgsString(project.property("args").toString())
-        }
-    }
 }
 
 dependencies {
@@ -100,11 +80,11 @@ dependencies {
     testImplementation("com.natpryce:hamkrest:_")
 }
 
-configurations.forEach {
-    if (it.name.contains("test") || it.name.contains("runtime") || it.name.contains("compileClasspath")) {
-        it.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
-    }
-}
+//configurations.forEach {
+//    if (it.name.contains("test") || it.name.contains("runtime") || it.name.contains("compileClasspath")) {
+//        it.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
+//    }
+//}
 
 dependencies {
     api(platform(Http4k.bom))

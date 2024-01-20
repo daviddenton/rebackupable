@@ -1,12 +1,7 @@
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
-    }
-}
-
-buildscript {
-    dependencies {
-        classpath("com.talk2duck:gradle-s3-build-cache:1.6.0.1")
     }
 }
 
