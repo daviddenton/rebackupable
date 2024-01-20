@@ -8,6 +8,8 @@
     <string>rebackupable.rebackupable</string>
     <key>CFBundleName</key>
     <string>Rebackipable</string>
+    <key>CFBundleIconFile</key>
+	<string>rebackupable.icns</string>
     <key>CFBundleVersion</key>
     <string>1.0</string>
     <key>CFBundlePackageType</key>
