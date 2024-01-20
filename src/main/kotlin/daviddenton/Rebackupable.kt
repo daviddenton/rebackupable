@@ -11,7 +11,7 @@ import daviddenton.adapter.SystemTerminal
 import daviddenton.adapter.UserHomeDirBackup
 import daviddenton.app.RebackupableHub
 import daviddenton.util.Debug
-import org.http4k.client.JavaHttpClient
+import org.http4k.client.OkHttp
 import org.http4k.cloudnative.env.Environment
 import org.http4k.cloudnative.env.Environment.Companion.ENV
 import org.http4k.cloudnative.env.Environment.Companion.JVM_PROPERTIES
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 fun Rebackupable(
     env: Environment = ENV overrides JVM_PROPERTIES,
-    rawHttp: HttpHandler = JavaHttpClient()
+    rawHttp: HttpHandler = OkHttp()
 ): CliktCommand {
     val terminal = SystemTerminal()
     val debug = AtomicReference(false)
