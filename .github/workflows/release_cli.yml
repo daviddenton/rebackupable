@@ -24,7 +24,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           name: rebackupable.jar
-          path: rebackupable/build/libs/rebackupable.jar
+          path: build/libs/rebackupable.jar
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1
