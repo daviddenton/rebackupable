@@ -13,8 +13,8 @@ fun Backup(hub: RebackupableHub, terminal: Terminal) = object : CliktCommand(
     override fun run() {
         terminal("Backing up Remarkable\n")
         when (val result = hub.backup()) {
-            is Success -> terminal("\nSuccessfully backed up ${result.value.count} files to ${result.value.location}")
-            is Failure -> terminal(result.reason.stackTraceToString())
+            is Success -> terminal("\nSuccessfully backed up ${result.value.count} files to ${result.value.location}\n")
+            is Failure -> terminal("\nFailed to backup\n${result.reason.localizedMessage}\n")
         }
     }
 }

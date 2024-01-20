@@ -9,7 +9,6 @@ import org.http4k.core.with
 import org.http4k.lens.Path
 import org.http4k.lens.value
 import org.http4k.routing.bind
-import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.server.SunHttp
 import org.http4k.server.asServer
@@ -17,6 +16,7 @@ import rebackupable.contents
 import rebackupable.domain.RemarkableContentPath
 import rebackupable.domain.RemarkableContentPath.Companion.ROOT
 import rebackupable.domain.RemarkableFile
+import rebackupable.domain.RemarkableFileId
 import rebackupable.fake.RemarkableFsEntry.File
 import rebackupable.fake.RemarkableFsEntry.Folder
 import rebackupable.util.Json
@@ -24,7 +24,7 @@ import rebackupable.util.Json
 fun FakeRemarkable(rootContents: List<RemarkableFsEntry>) = routes(
     "/download/{uuid}/placeholder" bind GET to { req: Request ->
         when (val result = rootContents.allFiles()
-            .firstOrNull { it.ID.toString() == req.path("uuid") }) {
+            .firstOrNull { it.ID == Path.value(RemarkableFileId).of("uuid")(req) }) {
             null -> Response(NOT_FOUND)
             else -> Response(OK)
                 .header("Content-Disposition", "attachment; filename=\"${result.VissibleName}.pdf\"")
