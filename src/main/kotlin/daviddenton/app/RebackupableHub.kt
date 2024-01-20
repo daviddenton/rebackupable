@@ -29,15 +29,15 @@ class RebackupableHub(
         return ROOT.backupFolder(LocalFilePath.of(rootFolder)).map { BackupReport(backup.location(rootFolder), it) }
     }
 
-    private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> =
-        remarkable.list(this)
+    private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> {
+        terminal("\n$fsPath:")
+        return remarkable.list(this)
             .flatMap {
                 it.map { remarkableFile ->
                     when (remarkableFile.Type) {
                         CollectionType -> child(remarkableFile.ID).backupFolder(fsPath.child(remarkableFile))
                         DocumentType -> {
                             terminal(".")
-                            terminal(remarkableFile.VissibleName.value)
                             remarkable.download(remarkableFile.ID)
                                 .flatMap { backup.write(fsPath.file(it.first), it.second) }
                                 .map { 1 }
@@ -47,7 +47,8 @@ class RebackupableHub(
                     .allValues()
                     .map(List<Int>::sum)
                     .also {
-                        terminal("\n")
+                    terminal("\n")
                     }
             }
+    }
 }

@@ -9,6 +9,7 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import org.http4k.cloudnative.RemoteRequestFailed
+import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
@@ -22,6 +23,7 @@ import java.io.InputStream
 
 class HttpRemarkable(http: HttpHandler, serverUrl: Uri) : Remarkable {
     private val http = ClientFilters.SetBaseUriFrom(serverUrl)
+        .then(AlwaysCloseConnection())
         .then(http)
 
     override fun list(path: RemarkableContentPath): Result4k<List<RemarkableFile>, RemoteRequestFailed> {
@@ -41,5 +43,11 @@ class HttpRemarkable(http: HttpHandler, serverUrl: Uri) : Remarkable {
             result.status.successful -> Success(name(result) to result.body.stream)
             else -> Failure(RemoteRequestFailed(result.status, "request failed ${result.status}", uri))
         }
+    }
+}
+
+private fun AlwaysCloseConnection() = Filter { next ->
+    {
+        next(it.header("Connection", "close"))
     }
 }
