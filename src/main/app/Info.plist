@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>launcher</string>
+    <string>rebackupable</string>
     <key>CFBundleIdentifier</key>
     <string>rebackupable.rebackupable</string>
     <key>CFBundleName</key>

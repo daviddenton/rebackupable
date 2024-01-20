@@ -1,5 +1,0 @@
-#!/bin/sh
-
-DIR=$(cd "$(dirname "$0")" || exit; pwd)
-
-exec "$DIR"/rebackupable backup

@@ -1,9 +1,8 @@
 package rebackupable
 
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.subcommands
-import com.github.ajalt.clikt.parameters.options.flag
-import com.github.ajalt.clikt.parameters.options.option
+import dev.forkhandles.result4k.Failure
+import dev.forkhandles.result4k.Success
 import okhttp3.OkHttpClient
 import org.http4k.client.OkHttp
 import org.http4k.cloudnative.env.Environment
@@ -28,24 +27,22 @@ fun Rebackupable(
         OkHttpClient.Builder()
             .callTimeout(Duration.ofMinutes(1))
             .readTimeout(Duration.ofMinutes(1))
-            .connectTimeout(Duration.ofMinutes(1))
+            .connectTimeout(Duration.ofSeconds(1))
             .followRedirects(false)
             .build()
     )
-): CliktCommand {
+) = object : CliktCommand(name = "rebackupable") {
     val terminal = SystemTerminal()
     val debug = AtomicReference(false)
     val clock = Clock.systemDefaultZone()
     val backup = UserHomeDirBackup(HOME_DIR(env))
     val remarkable = HttpRemarkable(Debug(debug).then(rawHttp), SERVER_URL(env))
     val hub = RebackupableHub(clock, backup, remarkable, terminal)
-
-    return object : CliktCommand(name = "rebackupable") {
-        val verbose by option(help = "Set verbose mode.").flag()
-
-        override fun run() = debug.set(verbose)
-    }.subcommands(
-        Backup(hub, terminal)
-    )
+    override fun run() {
+        terminal("Backing up Remarkable\n")
+        when (val result = hub.backup()) {
+            is Success -> terminal("\nSuccessfully backed up ${result.value.count} files to ${result.value.location}\n")
+            is Failure -> terminal("\nFailed to backup\n${result.reason.localizedMessage}\n")
+        }
+    }
 }
-
