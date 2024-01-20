@@ -61,10 +61,10 @@ jobs:
       - name: Get Upload URL
         run: |
           echo "UPLOAD_URL=$(cat upload_url.txt)" >> $GITHUB_ENV
-      - name: Upload it
+      - name: Create the DMG
         run: |
           hdiutil create -volname "Rebackupable" -srcfolder build/app/Rebackupable.app -ov -format UDZO Rebackupable-${{matrix.label}}.dmg
-      - name: Upload app
+      - name: Upload DMG to release
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
