@@ -46,6 +46,6 @@ RESET  := "\\u001b[0m"
 # release the CLI
 release:
      #!/usr/bin/env sh
-     curl -v -H "Authorization: token $GITHUB_TOKEN" \
+     curl -H "Authorization: token $GITHUB_TOKEN" \
       "https://api.github.com/repos/daviddenton/rebackupable/dispatches" \
       -d '{"event_type": "release", "client_payload": {"VERSION": "0.0.0"}}'
