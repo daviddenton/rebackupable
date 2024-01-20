@@ -11,6 +11,7 @@ import daviddenton.adapter.SystemTerminal
 import daviddenton.adapter.UserHomeDirBackup
 import daviddenton.app.RebackupableHub
 import daviddenton.util.Debug
+import okhttp3.OkHttpClient
 import org.http4k.client.OkHttp
 import org.http4k.cloudnative.env.Environment
 import org.http4k.cloudnative.env.Environment.Companion.ENV
@@ -18,11 +19,19 @@ import org.http4k.cloudnative.env.Environment.Companion.JVM_PROPERTIES
 import org.http4k.core.HttpHandler
 import org.http4k.core.then
 import java.time.Clock
+import java.time.Duration
 import java.util.concurrent.atomic.AtomicReference
 
 fun Rebackupable(
     env: Environment = ENV overrides JVM_PROPERTIES,
-    rawHttp: HttpHandler = OkHttp()
+    rawHttp: HttpHandler = OkHttp(
+        OkHttpClient.Builder()
+            .callTimeout(Duration.ofMinutes(1))
+            .readTimeout(Duration.ofMinutes(1))
+            .connectTimeout(Duration.ofMinutes(1))
+            .followRedirects(false)
+            .build()
+    )
 ): CliktCommand {
     val terminal = SystemTerminal()
     val debug = AtomicReference(false)

@@ -10,7 +10,7 @@ class UserHomeDirBackupTest : BackupContract {
 
     override val backup = UserHomeDirBackup(home)
 
-    override fun getFile(path: String) = File(home, path).readText()
+    override fun getFile(path: String) = File(File(home, "Rebackupable"), path).readText()
 
     @AfterEach
     fun removeTempDir() {

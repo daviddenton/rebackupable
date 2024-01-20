@@ -29,9 +29,8 @@ class RebackupableHub(
         return ROOT.backupFolder(LocalFilePath.of(rootFolder)).map { BackupReport(backup.location(rootFolder), it) }
     }
 
-    private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> {
-        terminal("\n$fsPath:")
-        return remarkable.list(this)
+    private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> =
+        remarkable.list(this)
             .flatMap {
                 it.map { remarkableFile ->
                     when (remarkableFile.Type) {
@@ -46,9 +45,5 @@ class RebackupableHub(
                 }
                     .allValues()
                     .map(List<Int>::sum)
-                    .also {
-                    terminal("\n")
-                    }
             }
-    }
 }
