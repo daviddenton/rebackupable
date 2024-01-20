@@ -44,8 +44,8 @@ BOLD   := "\\u001b[1m"
 RESET  := "\\u001b[0m"
 
 # release the CLI
-release:
+release version:
      #!/usr/bin/env sh
      curl -H "Authorization: token $GITHUB_TOKEN" \
       "https://api.github.com/repos/daviddenton/rebackupable/dispatches" \
-      -d '{"event_type": "release", "client_payload": {"VERSION": "0.0.0"}}'
+      -d '{"event_type": "release", "client_payload": {"VERSION": "{{version}}"}}'
