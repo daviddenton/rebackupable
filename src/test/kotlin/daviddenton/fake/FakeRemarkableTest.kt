@@ -6,7 +6,8 @@ import daviddenton.domain.RemarkableContentPath.Companion.ROOT
 import daviddenton.domain.RemarkableFile
 import daviddenton.domain.RemarkableFileId
 import daviddenton.domain.RemarkableFileName
-import daviddenton.domain.RemarkableFileType
+import daviddenton.domain.RemarkableFileType.CollectionType
+import daviddenton.domain.RemarkableFileType.DocumentType
 import dev.forkhandles.result4k.Success
 import dev.forkhandles.values.of
 import org.http4k.core.Uri
@@ -25,12 +26,12 @@ class FakeRemarkableTest {
                     listOf(
                         RemarkableFile(
                             RemarkableFileId.of(0, 1),
-                            RemarkableFileType.DocumentType,
+                            DocumentType,
                             RemarkableFileName.of("rootFile")
                         ),
                         RemarkableFile(
                             RemarkableFileId.of(2, 3),
-                            RemarkableFileType.CollectionType,
+                            CollectionType,
                             RemarkableFileName.of("childFolder")
                         )
                     )
@@ -46,12 +47,12 @@ class FakeRemarkableTest {
                     listOf(
                         RemarkableFile(
                             RemarkableFileId.of(4, 5),
-                            RemarkableFileType.DocumentType,
+                            DocumentType,
                             RemarkableFileName.of("childFile")
                         ),
                         RemarkableFile(
                             RemarkableFileId.of(6, 7),
-                            RemarkableFileType.CollectionType,
+                            CollectionType,
                             RemarkableFileName.of("grandchildFolder")
                         )
                     )
@@ -67,7 +68,7 @@ class FakeRemarkableTest {
                     listOf(
                         RemarkableFile(
                             RemarkableFileId.of(8, 9),
-                            RemarkableFileType.DocumentType,
+                            DocumentType,
                             RemarkableFileName.of("grandchildFile")
                         )
                     )
