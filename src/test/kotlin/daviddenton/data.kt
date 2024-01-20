@@ -2,18 +2,19 @@ package daviddenton
 
 import daviddenton.domain.RemarkableFileId
 import daviddenton.fake.RemarkableFsEntry
-import dev.forkhandles.values.random
+import dev.forkhandles.values.of
 
+private var index = 0L
 val contents = listOf(
-    RemarkableFsEntry.File(RemarkableFileId.random(), "rootFile"),
+    RemarkableFsEntry.File(RemarkableFileId.of(index++, index++), "rootFile"),
     RemarkableFsEntry.Folder(
-        RemarkableFileId.random(), "childFolder",
+        RemarkableFileId.of(index++, index++), "childFolder",
         listOf(
-            RemarkableFsEntry.File(RemarkableFileId.random(), "childFile"),
+            RemarkableFsEntry.File(RemarkableFileId.of(index++, index++), "childFile"),
             RemarkableFsEntry.Folder(
-                RemarkableFileId.random(), "grandchildFolder",
+                RemarkableFileId.of(index++, index++), "grandchildFolder",
                 listOf(
-                    RemarkableFsEntry.File(RemarkableFileId.random(), "grandchildFile")
+                    RemarkableFsEntry.File(RemarkableFileId.of(index++, index++), "grandchildFile")
                 )
             )
 
