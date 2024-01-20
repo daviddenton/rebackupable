@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export THE_DIR=$(cd "$(dirname "$0")" || exit; pwd)
+
+exec "$THE_DIR"/rebackupable backup
+# -Dapple.laf.useScreenMenuBar=true -Dcom.apple.macos.use-file-dialog-packages=true -Xdock:name="$APP_NAME" -Xdock:icon="$THE_DIR/../Resources/application.icns"

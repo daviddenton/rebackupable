@@ -1,4 +1,5 @@
 import com.google.devtools.ksp.gradle.KspTask
+import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -59,6 +60,21 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform()
+    }
+
+    register("osxApp") {
+//        dependsOn("nativeCompile")
+        doLast {
+            val dist = "${layout.buildDirectory.get()}/app/${project.name.capitalized()}.app"
+            File(dist).deleteRecursively()
+            mkdir("$dist/Contents/MacOS")
+            mkdir("$dist/Contents/Resources")
+            File("src/main/app/Info.plist").copyTo(File("$dist/Contents/Info.plist"))
+            File("src/main/app/launcher").copyTo(File("$dist/Contents/MacOS/launcher"))
+            File("src/main/app/application.icns").copyTo(File("$dist/Contents/Resources/application.icns"))
+            File("build/native/nativeCompile/rebackupable").copyTo(File("$dist/Contents/MacOS/rebackupable"))
+            Runtime.getRuntime().exec(arrayOf("chmod", "+x", "$dist/Contents/MacOS/ launcher"))
+        }
     }
 }
 
