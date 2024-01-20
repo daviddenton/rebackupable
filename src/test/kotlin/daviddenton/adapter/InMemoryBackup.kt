@@ -1,8 +1,6 @@
 package daviddenton.adapter
 
-import daviddenton.domain.RemarkableContentPath
-import daviddenton.domain.RemarkableContentPath.Companion.ROOT
-import daviddenton.domain.RemarkableFileName
+import daviddenton.domain.LocalFilePath
 import daviddenton.port.Backup
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
@@ -13,9 +11,8 @@ class InMemoryBackup : Backup {
 
     fun allSaved() = content.toMap()
 
-    override fun write(path: RemarkableContentPath, file: RemarkableFileName, data: InputStream): Result4k<Unit, Exception> {
-        val actualPath = if(path == ROOT) file.value else path.value + "/" + file
-        content[actualPath] = data.reader().readText()
+    override fun write(path: LocalFilePath, data: InputStream): Result4k<Unit, Exception> {
+        content[path.value] = data.reader().readText()
         return Success(Unit)
     }
 }

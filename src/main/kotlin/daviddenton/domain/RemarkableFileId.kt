@@ -7,4 +7,3 @@ import java.util.UUID
 class RemarkableFileId private constructor(value: UUID) : UUIDValue(value) {
     companion object : UUIDValueFactory<RemarkableFileId>(::RemarkableFileId)
 }
-

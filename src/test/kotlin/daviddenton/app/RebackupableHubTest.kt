@@ -27,8 +27,8 @@ class RebackupableHubTest {
         expectThat(backup.allSaved().toList().joinToString("\n")).isEqualTo(
             listOf(
                 "rootFile" to "00000000-0000-0000-0000-000000000001",
-                "00000000-0000-0002-0000-000000000003/childFile" to "00000000-0000-0004-0000-000000000005",
-                "00000000-0000-0002-0000-000000000003/00000000-0000-0006-0000-000000000007/grandchildFile" to "00000000-0000-0008-0000-000000000009",
+                "childFolder/childFile" to "00000000-0000-0004-0000-000000000005",
+                "childFolder/grandchildFolder/grandchildFile" to "00000000-0000-0008-0000-000000000009",
             ).joinToString("\n")
         )
     }

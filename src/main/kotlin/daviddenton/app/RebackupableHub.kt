@@ -1,6 +1,7 @@
 package daviddenton.app
 
 import daviddenton.domain.BackupReport
+import daviddenton.domain.LocalFilePath
 import daviddenton.domain.RemarkableContentPath
 import daviddenton.domain.RemarkableContentPath.Companion.ROOT
 import daviddenton.domain.RemarkableFileType.CollectionType
@@ -19,19 +20,20 @@ class RebackupableHub(
 ) {
     fun backup() = ROOT.backup()
 
-    private fun RemarkableContentPath.backup() = backupFolder().map { BackupReport(File("."), it) }
+    private fun RemarkableContentPath.backup() = backupFolder(LocalFilePath.ROOT).map { BackupReport(File("."), it) }
 
-    private fun RemarkableContentPath.backupFolder(): Result<Int, Exception> = remarkable.list(this)
-        .flatMap {
-            it.map { remarkableFile ->
-                when (remarkableFile.Type) {
-                    CollectionType -> child(remarkableFile.ID).backupFolder()
-                    DocumentType -> remarkable.download(remarkableFile.ID)
-                        .flatMap { backup.write(this, remarkableFile.VissibleName, it) }
-                        .map { 1 }
+    private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> =
+        remarkable.list(this)
+            .flatMap {
+                it.map { remarkableFile ->
+                    when (remarkableFile.Type) {
+                        CollectionType -> child(remarkableFile.ID).backupFolder(fsPath.child(remarkableFile))
+                        DocumentType -> remarkable.download(remarkableFile.ID)
+                            .flatMap { backup.write(fsPath.child(remarkableFile), it) }
+                            .map { 1 }
+                    }
                 }
+                    .allValues()
+                    .map(List<Int>::sum)
             }
-                .allValues()
-                .map(List<Int>::sum)
-        }
 }
