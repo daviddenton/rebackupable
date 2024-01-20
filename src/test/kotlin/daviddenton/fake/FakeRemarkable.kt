@@ -1,6 +1,7 @@
 package daviddenton.fake
 
 import daviddenton.domain.RemarkableContentPath
+import daviddenton.domain.RemarkableContentPath.Companion.ROOT
 import daviddenton.domain.RemarkableFile
 import daviddenton.fake.RemarkableFsEntry.File
 import daviddenton.fake.RemarkableFsEntry.Folder
@@ -21,8 +22,6 @@ import org.http4k.routing.routes
 fun FakeRemarkable(rootContents: List<RemarkableFsEntry>): RoutingHttpHandler {
 
 
-
-
     return routes(
         "/download/{uuid}/placeholder" bind GET to { req: Request ->
             when (val result = rootContents.allFiles()
@@ -32,7 +31,8 @@ fun FakeRemarkable(rootContents: List<RemarkableFsEntry>): RoutingHttpHandler {
             }
         },
         "/documents/{path:.*}" bind GET to { req ->
-            when (val result = rootContents.find(Path.value(RemarkableContentPath).of("path")(req))) {
+            val toFind = Path.value(RemarkableContentPath).of("path")(req)
+            when (val result = rootContents.find(toFind)) {
                 null -> Response(NOT_FOUND)
                 else -> result.list()
             }
@@ -45,14 +45,18 @@ private fun List<RemarkableFsEntry>.list() = Response(OK).with(
     Json.autoBody<List<RemarkableFile>>().toLens() of map(RemarkableFsEntry::toRemarkableFile)
 )
 
-// path = 123/546
-// list = 1 123 (456, 345)
-
 fun List<RemarkableFsEntry>.find(path: RemarkableContentPath): List<RemarkableFsEntry>? {
-    filterIsInstance<Folder>()
-        .firstOrNull { it.toRemarkableFile().ID == path.root }
-        ?.contents
-    TODO()
+    println("SEARCHING FOR $path")
+    return when (path) {
+        ROOT -> this
+        else -> filterIsInstance<Folder>()
+            .also {
+                println("LOOKING AT")
+                println(it)
+            }
+            .firstOrNull { it.toRemarkableFile().ID == path.root }
+            ?.contents?.find(path.dropRoot())
+    }
 }
 
 private fun List<RemarkableFsEntry>.allFiles(): List<RemarkableFile> = flatMap {

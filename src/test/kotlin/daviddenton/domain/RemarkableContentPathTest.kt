@@ -8,15 +8,19 @@ import strikt.assertions.isEqualTo
 
 class RemarkableContentPathTest {
 
+    private val child = ROOT.child(RemarkableFileId.of(0, 1))
+    private val grandchild = child.child(RemarkableFileId.of(2, 3))
+
     @Test
-    fun `can construct tree`() {
-        expectThat(ROOT.child(RemarkableFileId.of(0, 1)).child(RemarkableFileId.of(2, 3)))
-            .isEqualTo(RemarkableContentPath.of("00000000-0000-0000-0000-000000000001/00000000-0000-0002-0000-000000000003"))
+    fun `can report total path`() {
+        expectThat(ROOT).isEqualTo(RemarkableContentPath.of(""))
+        expectThat(child).isEqualTo(RemarkableContentPath.of("00000000-0000-0000-0000-000000000001"))
+        expectThat(grandchild).isEqualTo(RemarkableContentPath.of("00000000-0000-0000-0000-000000000001/00000000-0000-0002-0000-000000000003"))
     }
 
     @Test
     fun `can drill down tree`() {
-        expectThat(ROOT.child(RemarkableFileId.of(0, 1)).child(RemarkableFileId.of(2, 3)).dropRoot())
-            .isEqualTo(RemarkableContentPath.of("00000000-0000-0002-0000-000000000003"))
+        expectThat(child.dropRoot()).isEqualTo(RemarkableContentPath.of(""))
+        expectThat(grandchild.dropRoot()).isEqualTo(RemarkableContentPath.of("00000000-0000-0002-0000-000000000003"))
     }
 }
