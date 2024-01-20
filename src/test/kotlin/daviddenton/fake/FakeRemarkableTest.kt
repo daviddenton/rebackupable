@@ -39,22 +39,37 @@ class FakeRemarkableTest {
     }
 
     @Test
-    fun `get grandchild files`() {
-        expectThat(remarkable.list(ROOT.child(RemarkableFileId.of(2, 3)).child(RemarkableFileId.of(999, 999))))
+    fun `get child files`() {
+        expectThat(remarkable.list(ROOT.child(RemarkableFileId.of(2, 3))))
             .isEqualTo(
                 Success(
                     listOf(
+                        RemarkableFile(
+                            RemarkableFileId.of(4, 5),
+                            RemarkableFileType.DocumentType,
+                            RemarkableFileName.of("childFile")
+                        ),
+                        RemarkableFile(
+                            RemarkableFileId.of(6, 7),
+                            RemarkableFileType.CollectionType,
+                            RemarkableFileName.of("grandchildFolder")
+                        )
                     )
                 )
             )
     }
 
     @Test
-    fun `get child files`() {
-        expectThat(remarkable.list(ROOT.child(RemarkableFileId.of(2, 3))))
+    fun `get grandchild files`() {
+        expectThat(remarkable.list(ROOT.child(RemarkableFileId.of(2, 3)).child(RemarkableFileId.of(6, 7))))
             .isEqualTo(
                 Success(
                     listOf(
+                        RemarkableFile(
+                            RemarkableFileId.of(8, 9),
+                            RemarkableFileType.DocumentType,
+                            RemarkableFileName.of("grandchildFile")
+                        )
                     )
                 )
             )

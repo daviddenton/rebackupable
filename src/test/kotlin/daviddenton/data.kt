@@ -17,7 +17,6 @@ val contents = listOf(
                     RemarkableFsEntry.File(RemarkableFileId.of(index++, index++), "grandchildFile")
                 )
             )
-
         )
     )
 )

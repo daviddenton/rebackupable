@@ -45,18 +45,11 @@ private fun List<RemarkableFsEntry>.list() = Response(OK).with(
     Json.autoBody<List<RemarkableFile>>().toLens() of map(RemarkableFsEntry::toRemarkableFile)
 )
 
-fun List<RemarkableFsEntry>.find(path: RemarkableContentPath): List<RemarkableFsEntry>? {
-    println("SEARCHING FOR $path")
-    return when (path) {
-        ROOT -> this
-        else -> filterIsInstance<Folder>()
-            .also {
-                println("LOOKING AT")
-                println(it)
-            }
-            .firstOrNull { it.toRemarkableFile().ID == path.root }
-            ?.contents?.find(path.dropRoot())
-    }
+private fun List<RemarkableFsEntry>.find(path: RemarkableContentPath): List<RemarkableFsEntry>? = when (path) {
+    ROOT -> this
+    else -> filterIsInstance<Folder>()
+        .firstOrNull { it.toRemarkableFile().ID == path.root }
+        ?.contents?.find(path.dropRoot())
 }
 
 private fun List<RemarkableFsEntry>.allFiles(): List<RemarkableFile> = flatMap {
