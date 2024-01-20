@@ -23,7 +23,9 @@ fun FakeRemarkable(rootContents: List<RemarkableFsEntry>) = routes(
         when (val result = rootContents.allFiles()
             .firstOrNull { it.ID.toString() == req.path("uuid") }) {
             null -> Response(NOT_FOUND)
-            else -> Response(OK).body(result.ID.toString())
+            else -> Response(OK)
+                .header("Content-Disposition", "attachment; filename=\"${result.VissibleName}.pdf\"")
+                .body(result.ID.toString())
         }
     },
     "/documents/{path:.*}" bind GET to { req ->

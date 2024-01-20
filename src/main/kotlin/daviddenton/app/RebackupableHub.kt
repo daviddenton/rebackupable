@@ -39,7 +39,7 @@ class RebackupableHub(
                             terminal(".")
                             terminal(remarkableFile.VissibleName.value)
                             remarkable.download(remarkableFile.ID)
-                                .flatMap { backup.write(fsPath.child(remarkableFile), it) }
+                                .flatMap { backup.write(fsPath.file(it.first), it.second) }
                                 .map { 1 }
                         }
                     }

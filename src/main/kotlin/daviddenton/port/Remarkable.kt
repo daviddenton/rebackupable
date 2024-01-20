@@ -8,5 +8,5 @@ import java.io.InputStream
 
 interface Remarkable {
     fun list(path: RemarkableContentPath): Result4k<List<RemarkableFile>, Exception>
-    fun download(id: RemarkableFileId): Result4k<InputStream, Exception>
+    fun download(id: RemarkableFileId): Result4k<Pair<String, InputStream>, Exception>
 }

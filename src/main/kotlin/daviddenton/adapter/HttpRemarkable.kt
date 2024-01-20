@@ -16,6 +16,8 @@ import org.http4k.core.Uri
 import org.http4k.core.then
 import org.http4k.filter.ClientFilters
 import org.http4k.format.invoke
+import org.http4k.lens.Header
+import org.http4k.lens.regex
 import java.io.InputStream
 
 class HttpRemarkable(http: HttpHandler, serverUrl: Uri) : Remarkable {
@@ -31,11 +33,12 @@ class HttpRemarkable(http: HttpHandler, serverUrl: Uri) : Remarkable {
         }
     }
 
-    override fun download(id: RemarkableFileId): Result4k<InputStream, Exception> {
+    override fun download(id: RemarkableFileId): Result4k<Pair<String, InputStream>, Exception> {
         val uri = Uri.of("/download/$id/placeholder")
+        val name = Header.regex(".*filename=\"(.+).+").required("Content-Disposition")
         val result = http(Request(GET, uri))
         return when {
-            result.status.successful -> Success(result.body.stream)
+            result.status.successful -> Success(name(result) to result.body.stream)
             else -> Failure(RemoteRequestFailed(result.status, "request failed ${result.status}", uri))
         }
     }

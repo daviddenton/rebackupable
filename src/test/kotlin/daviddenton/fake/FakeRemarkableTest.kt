@@ -27,8 +27,7 @@ class FakeRemarkableTest {
                         RemarkableFile(
                             RemarkableFileId.of(0, 1),
                             DocumentType,
-                            RemarkableFileName.of("rootFile"),
-                            "pdf"
+                            RemarkableFileName.of("rootFile")
                         ),
                         RemarkableFile(
                             RemarkableFileId.of(2, 3),
@@ -49,8 +48,7 @@ class FakeRemarkableTest {
                         RemarkableFile(
                             RemarkableFileId.of(4, 5),
                             DocumentType,
-                            RemarkableFileName.of("childFile"),
-                            "pdf"
+                            RemarkableFileName.of("childFile")
                         ),
                         RemarkableFile(
                             RemarkableFileId.of(6, 7),
@@ -71,8 +69,7 @@ class FakeRemarkableTest {
                         RemarkableFile(
                             RemarkableFileId.of(8, 9),
                             DocumentType,
-                            RemarkableFileName.of("grandchildFile"),
-                            "pdf"
+                            RemarkableFileName.of("grandchildFile")
                         )
                     )
                 )
