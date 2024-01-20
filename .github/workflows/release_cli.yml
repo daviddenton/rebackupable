@@ -34,14 +34,14 @@ jobs:
         os:
 #          - ubuntu-latest
           - macos-latest
-#          - macos-latest-xlarge
+          - macos-latest-xlarge
         include:
 #          - os: ubuntu-latest
 #            label: linux
           - os: macos-latest
             label: macos-x86_64
-#          - os: macos-latest-xlarge
-#            label: macos-arm64
+          - os: macos-latest-xlarge
+            label: macos-arm64
     runs-on: ${{matrix.os}}
     steps:
       - name: Checkout
