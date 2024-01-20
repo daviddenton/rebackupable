@@ -38,10 +38,10 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux
-          - os: macos-latest
-            label: mac
-          - os: macos-latest-xlarge
-            label: mac-m1
+#          - os: macos-latest
+#            label: mac
+#          - os: macos-latest-xlarge
+#            label: mac-m1
     runs-on: ${{matrix.os}}
     steps:
       - name: Checkout
