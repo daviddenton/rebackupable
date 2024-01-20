@@ -10,6 +10,7 @@ import org.http4k.format.value
 import org.http4k.format.withStandardMappings
 import rebackupable.domain.RemarkableFileId
 import rebackupable.domain.RemarkableFileName
+import rebackupable.domain.RemarkableFileType
 import se.ansman.kotshi.KotshiJsonAdapterFactory
 
 object Json : ConfigurableMoshi(
@@ -20,6 +21,7 @@ object Json : ConfigurableMoshi(
         .asConfigurable()
         .withStandardMappings()
         .value(RemarkableFileId)
+        .value(RemarkableFileType)
         .value(RemarkableFileName)
         .done()
 )

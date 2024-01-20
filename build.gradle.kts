@@ -1,5 +1,4 @@
 import com.google.devtools.ksp.gradle.KspTask
-import org.gradle.api.JavaVersion.VERSION_1_8
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -47,10 +46,6 @@ repositories {
     google()
 }
 
-version = project.properties["releaseVersion"] ?: "LOCAL"
-group = "org.http4k"
-
-
 tasks {
     withType<KspTask> {
         outputs.upToDateWhen { false }
@@ -59,13 +54,7 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-            jvmTarget = "1.8"
         }
-    }
-
-    java {
-        sourceCompatibility = VERSION_1_8
-        targetCompatibility = VERSION_1_8
     }
 
     withType<Test> {

@@ -10,8 +10,8 @@ import rebackupable.domain.RemarkableContentPath.Companion.ROOT
 import rebackupable.domain.RemarkableFile
 import rebackupable.domain.RemarkableFileId
 import rebackupable.domain.RemarkableFileName
-import rebackupable.domain.RemarkableFileType.CollectionType
-import rebackupable.domain.RemarkableFileType.DocumentType
+import rebackupable.domain.RemarkableFileType.Companion.CollectionType
+import rebackupable.domain.RemarkableFileType.Companion.DocumentType
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 

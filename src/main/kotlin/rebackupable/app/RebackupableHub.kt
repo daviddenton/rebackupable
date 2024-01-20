@@ -8,8 +8,8 @@ import rebackupable.domain.BackupReport
 import rebackupable.domain.LocalFilePath
 import rebackupable.domain.RemarkableContentPath
 import rebackupable.domain.RemarkableContentPath.Companion.ROOT
-import rebackupable.domain.RemarkableFileType.CollectionType
-import rebackupable.domain.RemarkableFileType.DocumentType
+import rebackupable.domain.RemarkableFileType.Companion.CollectionType
+import rebackupable.domain.RemarkableFileType.Companion.DocumentType
 import rebackupable.port.Backup
 import rebackupable.port.Remarkable
 import rebackupable.port.Terminal
@@ -32,7 +32,7 @@ class RebackupableHub(
     private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> =
         remarkable.list(this)
             .flatMap {
-                it.map { remarkableFile ->
+                it.mapNotNull { remarkableFile ->
                     when (remarkableFile.Type) {
                         CollectionType -> child(remarkableFile.ID).backupFolder(fsPath.child(remarkableFile))
                         DocumentType -> {
@@ -41,6 +41,7 @@ class RebackupableHub(
                                 .flatMap { backup.write(fsPath.file(it.first), it.second) }
                                 .map { 1 }
                         }
+                        else -> null
                     }
                 }
                     .allValues()

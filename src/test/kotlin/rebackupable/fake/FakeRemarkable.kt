@@ -11,6 +11,9 @@ import org.http4k.lens.value
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
+import org.http4k.server.SunHttp
+import org.http4k.server.asServer
+import rebackupable.contents
 import rebackupable.domain.RemarkableContentPath
 import rebackupable.domain.RemarkableContentPath.Companion.ROOT
 import rebackupable.domain.RemarkableFile
@@ -56,3 +59,6 @@ private fun List<RemarkableFsEntry>.allFiles(): List<RemarkableFile> = flatMap {
     }
 }
 
+fun main() {
+    FakeRemarkable(contents).asServer(SunHttp(9000)).start()
+}
