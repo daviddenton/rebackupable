@@ -5,6 +5,7 @@ import daviddenton.fake.RemarkableFsEntry
 import dev.forkhandles.values.of
 
 private var index = 0L
+
 val contents = listOf(
     RemarkableFsEntry.File(RemarkableFileId.of(index++, index++), "rootFile"),
     RemarkableFsEntry.Folder(

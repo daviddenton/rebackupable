@@ -29,7 +29,7 @@ fun Rebackupable(
     val clock = Clock.systemDefaultZone()
     val backup = UserHomeDirBackup(clock, HOME_DIR(env))
     val remarkable = HttpRemarkable(Debug(debug).then(rawHttp), SERVER_URL(env))
-    val hub = RebackupableHub(backup, remarkable)
+    val hub = RebackupableHub(clock, backup, remarkable)
 
     return object : CliktCommand(name = "rebackupable") {
         val verbose by option(help = "Set verbose mode.").flag()

@@ -13,14 +13,21 @@ import dev.forkhandles.result4k.allValues
 import dev.forkhandles.result4k.flatMap
 import dev.forkhandles.result4k.map
 import java.io.File
+import java.time.Clock
+import java.time.format.DateTimeFormatter
 
 class RebackupableHub(
+    private val clock: Clock,
     private val backup: Backup,
     private val remarkable: Remarkable
 ) {
     fun backup() = ROOT.backup()
 
-    private fun RemarkableContentPath.backup() = backupFolder(LocalFilePath.ROOT).map { BackupReport(File("."), it) }
+    private fun RemarkableContentPath.backup(): Result<BackupReport, Exception> {
+        val backupTime = clock.instant().atZone(clock.zone)
+        val rootFolder = DateTimeFormatter.ofPattern("yyyy/MM/DD/HHmm").format(backupTime)
+        return backupFolder(LocalFilePath.of(rootFolder)).map { BackupReport(File(rootFolder), it) }
+    }
 
     private fun RemarkableContentPath.backupFolder(fsPath: LocalFilePath): Result<Int, Exception> =
         remarkable.list(this)
