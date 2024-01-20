@@ -42,3 +42,10 @@ GREEN  := "\\u001b[32m"
 YELLOW := "\\u001b[33m"
 BOLD   := "\\u001b[1m"
 RESET  := "\\u001b[0m"
+
+# workflow
+workflow:
+     #!/usr/bin/env sh
+     curl -H "Authorization: token $GITHUB_TOKEN" \
+      "https://api.github.com/repos/daviddenton/rebackupable/dispatches" \
+      -d '{"event_type": "release-cli", "client_payload": {"VERSION": "0.0.0"}}'
