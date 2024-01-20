@@ -3,7 +3,8 @@ package daviddenton.fake
 import daviddenton.domain.RemarkableFile
 import daviddenton.domain.RemarkableFileId
 import daviddenton.domain.RemarkableFileName
-import daviddenton.domain.RemarkableFileType
+import daviddenton.domain.RemarkableFileType.CollectionType
+import daviddenton.domain.RemarkableFileType.DocumentType
 
 sealed interface RemarkableFsEntry {
     val id: RemarkableFileId
@@ -16,15 +17,15 @@ sealed interface RemarkableFsEntry {
         override val name: String
     ) : RemarkableFsEntry {
         override fun toRemarkableFile() =
-            RemarkableFile(id, RemarkableFileType.DocumentType, RemarkableFileName.of(name))
+            RemarkableFile(id, DocumentType, RemarkableFileName.of(name))
     }
 
     data class Folder(
         override val id: RemarkableFileId,
         override val name: String,
-        val contents: Map<RemarkableFileId, RemarkableFsEntry>
+        val contents: List<RemarkableFsEntry>
     ) : RemarkableFsEntry {
         override fun toRemarkableFile() =
-            RemarkableFile(id, RemarkableFileType.CollectionType, RemarkableFileName.of(name))
+            RemarkableFile(id, CollectionType, RemarkableFileName.of(name))
     }
 }

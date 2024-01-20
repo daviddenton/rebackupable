@@ -53,7 +53,7 @@ fun List<RemarkableFsEntry>.find(path: RemarkableContentPath): List<RemarkableFs
 private fun List<RemarkableFsEntry>.allFiles(): List<RemarkableFile> = flatMap {
     when (it) {
         is File -> listOf(it.toRemarkableFile())
-        is Folder -> it.contents.entries.map { it.value }.allFiles()
+        is Folder -> it.contents.allFiles()
     }
 }
 
