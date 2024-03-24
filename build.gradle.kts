@@ -40,11 +40,6 @@ graalvmNative {
     }
 }
 
-repositories {
-    mavenCentral()
-    google()
-}
-
 tasks {
     withType<KspTask> {
         outputs.upToDateWhen { false }

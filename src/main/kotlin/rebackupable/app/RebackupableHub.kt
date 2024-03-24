@@ -24,7 +24,7 @@ class RebackupableHub(
 ) {
     fun backup(): Result<BackupReport, Exception> {
         val backupTime = clock.instant().atZone(clock.zone)
-        val rootFolder = DateTimeFormatter.ofPattern("yyyy/MM/DD/HHmm").format(backupTime)
+        val rootFolder = DateTimeFormatter.ofPattern("yyyy/MM/dd/HHmm").format(backupTime)
 
         return ROOT.backupFolder(LocalFilePath.of(rootFolder)).map { BackupReport(backup.location(rootFolder), it) }
     }
