@@ -10,5 +10,5 @@ Remarkable content will be exported to your local `Documents` folder, where they
 2. Connect your Remarkable to your Mac using the [official process](https://support.remarkable.com/s/article/Transferring-files-using-a-USB-cable)
 3. Attempt to open the app. The binary is unsigned, so in order to use you will need to bypass the  MacOS `Security & Privacy` protections when opening an app from "an unidentified developer" (me!). See [here](https://support.apple.com/en-gb/guide/mac-help/mh40616/mac) for more details on how to do this.
 4. The Rebackupable logo will bounce whilst the backup is happening, then quit when it is finished.
-5. Files are exported to a new dated folder: `/Documents/YYYY/MM/DD/HHmm`.
+5. Files are exported to a new dated folder: `/Documents/YYYY/MM/dd/HHmm`.
 6. Remember to run this regularly!
