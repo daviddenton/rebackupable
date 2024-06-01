@@ -33,14 +33,14 @@ jobs:
       matrix:
         os:
 #          - ubuntu-latest
-          - macos-13-large
-          - macos-13-xlarge
+          - macos-12-large
+          - macos-12-xlarge
         include:
 #          - os: ubuntu-latest
 #            label: linux
-          - os: macos-13-large
+          - os: macos-12-large
             label: macos-x86_64
-          - os: macos-13-xlarge
+          - os: macos-12-xlarge
             label: macos-arm64
     runs-on: ${{matrix.os}}
     steps:
