@@ -1,11 +1,11 @@
 name: "[CLI] Release"
 
 on:
-  workflow-dispatch:
+  workflow_dispatch:
     inputs:
-      name: VERSION
-      required: true
-      type: string
+      version:
+        required: true
+        type: string
 
 jobs:
   setup:
