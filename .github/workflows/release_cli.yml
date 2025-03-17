@@ -1,8 +1,11 @@
 name: "[CLI] Release"
 
 on:
-  repository_dispatch:
-    types: [ release ]
+  workflow_dispatch:
+    inputs:
+      - name: VERSION
+        required: true
+        type: string
 
 jobs:
   setup:
@@ -14,10 +17,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
         with:
-          tag: ${{ github.event.client_payload.VERSION }}
-          name: Release ${{ github.event.client_payload.VERSION }}
+          tag: ${{ inputs.VERSION }}
+          name: Release ${{ inputs.VERSION }}
           body: |
-            Release ${{ github.event.client_payload.VERSION }}
+            Release ${{ inputs.VERSION }}
       - name: Write Upload URL To File
         run: |
           echo "${{steps.create_release.outputs.upload_url}}" > upload_url.txt
