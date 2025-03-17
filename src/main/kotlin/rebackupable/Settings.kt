@@ -1,6 +1,6 @@
 package rebackupable
 
-import org.http4k.cloudnative.env.EnvironmentKey
+import org.http4k.config.EnvironmentKey
 import org.http4k.core.Uri
 import org.http4k.lens.of
 import org.http4k.lens.uri

@@ -10,10 +10,10 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Uri
 import org.http4k.core.then
-import org.http4k.filter.ClientFilters
+import org.http4k.filter.ClientFilters.SetBaseUriFrom
 import org.http4k.format.invoke
 import org.http4k.lens.Header
-import org.http4k.lens.regex
+import org.http4k.lens.regexGroup
 import rebackupable.domain.RemarkableContentPath
 import rebackupable.domain.RemarkableFile
 import rebackupable.domain.RemarkableFileId
@@ -22,7 +22,7 @@ import rebackupable.util.Json
 import java.io.InputStream
 
 class HttpRemarkable(http: HttpHandler, serverUrl: Uri) : Remarkable {
-    private val http = ClientFilters.SetBaseUriFrom(serverUrl)
+    private val http = SetBaseUriFrom(serverUrl)
         .then(AlwaysCloseConnection())
         .then(http)
 
@@ -37,11 +37,13 @@ class HttpRemarkable(http: HttpHandler, serverUrl: Uri) : Remarkable {
 
     override fun download(id: RemarkableFileId): Result4k<Pair<String, InputStream>, Exception> {
         val uri = Uri.of("/download/$id/placeholder")
-        val name = Header.regex(".*filename=\"(.+).+").required("Content-Disposition")
+        val name = Header.regexGroup(".*filename=\"(.+).+").required("Content-Disposition")
         val result = http(Request(GET, uri))
         return when {
             result.status.successful -> Success(name(result) to result.body.stream)
-            else -> Failure(RemoteRequestFailed(result.status, "request failed ${result.status}", uri))
+            else -> {
+                Failure(RemoteRequestFailed(result.status, "request failed ${result.status}", uri))
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 import com.google.devtools.ksp.gradle.KspTask
-import org.gradle.configurationcache.extensions.capitalized
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     kotlin("jvm")
@@ -25,6 +25,12 @@ repositories {
     google()
 }
 
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
 apply(plugin = "java")
 apply(plugin = "kotlin")
 apply(plugin = "com.google.devtools.ksp")
@@ -45,9 +51,11 @@ tasks {
         outputs.upToDateWhen { false }
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+
+    withType<KotlinJvmCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JVM_21)
+            freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
         }
     }
 
@@ -58,7 +66,9 @@ tasks {
     register("osxApp") {
         dependsOn("nativeCompile")
         doLast {
-            val dist = "${layout.buildDirectory.get()}/app/${project.name.capitalized()}.app"
+            val dist = "${layout.buildDirectory.get()}/app/${
+                project.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+            }.app"
             File(dist).deleteRecursively()
             mkdir("$dist/Contents/MacOS")
             mkdir("$dist/Contents/Resources")
@@ -88,9 +98,10 @@ dependencies {
     ksp("se.ansman.kotshi:compiler:_")
 
     api(Http4k.core)
-    api(Http4k.cloudnative)
     api(Http4k.client.okhttp)
     api(Http4k.format.moshi)
+    api("org.http4k:http4k-config")
+    api("org.http4k:http4k-platform-core")
     api("org.http4k:http4k-format-moshi-yaml")
     api("se.ansman.kotshi:api:_")
     api("com.nimbusds:nimbus-jose-jwt:_")
